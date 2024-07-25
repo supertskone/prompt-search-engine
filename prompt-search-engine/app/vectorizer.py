@@ -81,19 +81,6 @@ class Vectorizer:
                              in enumerate(vectors)]
             self.index.upsert(vectors=pinecone_data)
             logger.info(f"Upserted batch {i // self.batch_size + 1}/{len(dataset) // self.batch_size + 1} to Pinecone")
-    # def _store_prompts(self, dataset):
-    #     logger.info("Storing prompts in Pinecone")
-    #     for i in range(0, len(dataset), self.batch_size):
-    #         batch = dataset[i:i+self.batch_size]
-    #         logger.info(f"Encoding batch {i // self.batch_size + 1}")
-    #         vectors = self.model.encode(batch)
-    #         logger.info(f"Encoded {len(vectors)} vectors")
-    #         # Prepare data for Pinecone
-    #         pinecone_data = [{'id': str(i + j), 'vector': vector.tolist(), 'metadata': {'text': batch[j]}} for j, vector
-    #                          in enumerate(vectors)]
-    #         logger.info(f"Upserting batch {i // self.batch_size + 1}")
-    #         self.index.upsert(vectors=pinecone_data)
-    #         logger.info(f"Upserted batch {i // self.batch_size + 1}/{len(dataset) // self.batch_size + 1} to Pinecone")
 
     def transform(self, prompts):
         return np.array(self.model.encode(prompts))
