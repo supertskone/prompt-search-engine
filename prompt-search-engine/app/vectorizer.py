@@ -15,12 +15,13 @@ logger = logging.getLogger(__name__)
 
 
 class Vectorizer:
-    def __init__(self, model_name='all-mpnet-base-v2', batch_size=64):
+    def __init__(self, model_name='all-mpnet-base-v2', batch_size=64, init_pinecone=True):
         logger.info(f"Initializing Vectorizer with model {model_name} and batch size {batch_size}")
         self.model = SentenceTransformer(model_name)
         self.prompts = []
         self.batch_size = batch_size
         self.pinecone_index_name = "prompts-index"
+        self._init_pinecone = init_pinecone
         self._setup_pinecone()
         self._load_prompts()
 
@@ -29,21 +30,26 @@ class Vectorizer:
         # Initialize Pinecone
         pinecone = Pinecone(api_key='b514eb66-8626-4697-8a1c-4c411c06c090')
         # Check if the Pinecone index exists, if not create it
-        if self.pinecone_index_name not in pinecone.list_indexes():
+        existing_indexes = pinecone.list_indexes()
+
+        logger.info(f"self.init_pineconeself.init_pineconeself"
+                    f".init_pineconeself.init_pineconeself.init_pinecone: {self._init_pinecone}")
+        if self.pinecone_index_name not in existing_indexes:
             logger.info(f"Creating Pinecone index: {self.pinecone_index_name}")
-            # pinecone.create_index(
-            #     name="new-index",
-            #     dimension=768,
-            #     metric='cosine',
-            #     spec=ServerlessSpec(
-            #         cloud="aws",
-            #         region="us-east-1"
-            #     )
-            # )
+            if self._init_pinecone:
+                pinecone.create_index(
+                    name=self.pinecone_index_name,
+                    dimension=768,
+                    metric='cosine',
+                    spec=ServerlessSpec(
+                        cloud="aws",
+                        region="us-east-1"
+                    )
+                )
         else:
             logger.info(f"Pinecone index {self.pinecone_index_name} already exists")
 
-        self.index = pinecone.Index(self.pinecone_index_name, host="")
+        self.index = pinecone.Index(self.pinecone_index_name)
 
     def _load_prompts(self):
         logger.info("Loading prompts from Pinecone")
@@ -75,14 +81,31 @@ class Vectorizer:
                              in enumerate(vectors)]
             self.index.upsert(vectors=pinecone_data)
             logger.info(f"Upserted batch {i // self.batch_size + 1}/{len(dataset) // self.batch_size + 1} to Pinecone")
+    # def _store_prompts(self, dataset):
+    #     logger.info("Storing prompts in Pinecone")
+    #     for i in range(0, len(dataset), self.batch_size):
+    #         batch = dataset[i:i+self.batch_size]
+    #         logger.info(f"Encoding batch {i // self.batch_size + 1}")
+    #         vectors = self.model.encode(batch)
+    #         logger.info(f"Encoded {len(vectors)} vectors")
+    #         # Prepare data for Pinecone
+    #         pinecone_data = [{'id': str(i + j), 'vector': vector.tolist(), 'metadata': {'text': batch[j]}} for j, vector
+    #                          in enumerate(vectors)]
+    #         logger.info(f"Upserting batch {i // self.batch_size + 1}")
+    #         self.index.upsert(vectors=pinecone_data)
+    #         logger.info(f"Upserted batch {i // self.batch_size + 1}/{len(dataset) // self.batch_size + 1} to Pinecone")
 
     def transform(self, prompts):
         return np.array(self.model.encode(prompts))
 
-    def store_from_dataset(self):
-        logger.info("Loading dataset")
-        dataset = load_dataset('fantasyfish/laion-art', split='train')
-        logger.info(f"Loaded {len(dataset)} items from dataset")
-        self._store_prompts([item['text'] for item in dataset])
-        # Ensure prompts are loaded after storing
-        self._load_prompts()
+    def store_from_dataset(self, store_data=False):
+        if store_data:
+            logger.info("Loading dataset")
+            dataset = load_dataset('fantasyfish/laion-art', split='train')
+            logger.info(f"Loaded {len(dataset)} items from dataset")
+            logger.info("Please wait for storing. This may take up to five minutes. ")
+            self._store_prompts([item['text'] for item in dataset])
+            logger.info("Items from dataset are stored.")
+            # Ensure prompts are loaded after storing
+            self._load_prompts()
+            logger.info("Items from dataset are loaded.")

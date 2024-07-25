@@ -6,10 +6,15 @@ import requests
 st.title("Prompt Search Engine")
 
 query = st.text_input("Enter your query:")
+use_pinecone = st.radio(
+    "Choose search method:",
+    ('Pinecone Vector Search', 'Cosine Similarity')
+)
 n = st.number_input("Number of results:", min_value=1, max_value=20, value=5)
 
 if st.button("Search"):
-    response = requests.post("http://localhost:5000/search", json={"query": query, "n": n})
+    search_method = use_pinecone == 'Pinecone Vector Search'
+    response = requests.post("http://localhost:5000/search", json={"query": query, "n": n, "use_pinecone": search_method})
 
     # Log the response for debugging
     st.write("Response Status Code:", response.status_code)
