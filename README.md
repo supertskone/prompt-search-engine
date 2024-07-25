@@ -64,6 +64,11 @@ Make sure that you executed python load_data.py before.
 You should receive something like this:
 <img width="576" alt="image" src="https://github.com/user-attachments/assets/a9cd8acb-9280-4b55-9bec-3009a0a61b87">
 
+### Rebuild and run Docker container
+```
+docker build -t prompt-search-engine .
+docker run -p 5000:5000 prompt-search-engine
+```
 
 ### Usage
 Open your web browser and go to http://localhost:8501.
