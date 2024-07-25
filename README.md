@@ -13,7 +13,7 @@ The Prompt Search Engine is a Flask-based web application designed to search for
 
 ## Prerequisites
 
-- Python 3.8 or higher
+- Python 3.9 or higher
 - Pinecone API key
 
 ## Setup
@@ -55,6 +55,16 @@ python run.py
 
 streamlit run ui/app.py
 ```
+### Running the Tests 
+To run the tests, navigate to the root directory and execute:
+```
+python run_tests.py
+```
+Make sure that you executed python load_data.py before.
+You should receive something like this:
+<img width="576" alt="image" src="https://github.com/user-attachments/assets/a9cd8acb-9280-4b55-9bec-3009a0a61b87">
+
+
 ### Usage
 Open your web browser and go to http://localhost:8501.
 Enter a query in the input box.
