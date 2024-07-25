@@ -1,0 +1,8 @@
+flask
+requests
+streamlit
+transformers
+numpy
+sentence-transformers
+datasets
+pinecone
