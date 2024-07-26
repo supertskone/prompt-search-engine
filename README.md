@@ -4,7 +4,8 @@
 
 https://github.com/user-attachments/assets/dc668e29-ca32-4868-9431-531b2fefb574
 
-
+#### HF Spaces link: 
+https://huggingface.co/spaces/supertskone/prompt-search-engine
 
 ## Overview
 
