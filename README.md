@@ -1,5 +1,11 @@
 # Prompt Search Engine
 
+
+
+https://github.com/user-attachments/assets/dc668e29-ca32-4868-9431-531b2fefb574
+
+
+
 ## Overview
 
 The Prompt Search Engine is a Flask-based web application designed to search for the most similar prompts from a dataset using cosine similarity. It leverages Hugging Face's `sentence-transformers` to vectorize prompts and stores them in a Pinecone vector database for efficient querying. The frontend is built using Streamlit, providing an intuitive interface for users to input their queries and get results.
@@ -21,7 +27,7 @@ The Prompt Search Engine is a Flask-based web application designed to search for
 ### Clone the Repository
 
 ```
-git clone https://github.com/your-username/prompt-search-engine.git
+git clone https://github.com/supertskone/prompt-search-engine.git
 cd prompt-search-engine
 ```
 ## Create a Virtual Environment and Install Dependencies
@@ -34,7 +40,6 @@ pip install -r requirements.txt
 ## Configure Pinecone
 ```
 # Replace YOUR_PINECONE_API_KEY with your actual Pinecone API key in the vectorizer.py file.
-python
 pinecone = Pinecone(api_key='YOUR_PINECONE_API_KEY')
 ```
 ### Initial Data Load
